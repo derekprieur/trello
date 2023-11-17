@@ -3,6 +3,10 @@
 import { useMobileSidebar } from "@/hooks/useMobileSidebar";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
+import { Menu } from "lucide-react";
+import { Sheet, SheetContent } from "../ui/sheet";
+import Sidebar from "./Sidebar";
 
 const MobileSidebar = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -15,11 +19,31 @@ const MobileSidebar = () => {
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    onClose();
+  }, [pathname, onClose]);
+
   if (!isMounted) {
     return null;
   }
 
-  return <div>MobileSidebar</div>;
+  return (
+    <>
+      <Button
+        onClick={onOpen}
+        className="mr-2 block md:hidden"
+        variant="ghost"
+        size="sm"
+      >
+        <Menu className="h-4 w-4" />
+      </Button>
+      <Sheet open={isOpen} onOpenChange={onClose}>
+        <SheetContent side="left" className="p-2 pt-10">
+          <Sidebar storageKey="t-sidebar-mobile-state" />
+        </SheetContent>
+      </Sheet>
+    </>
+  );
 };
 
 export default MobileSidebar;
