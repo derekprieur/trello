@@ -4,12 +4,26 @@ import { useRef, ElementRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Board } from "@prisma/client";
 import FormInput from "../form/FormInput";
+import { useAction } from "@/hooks/useAction";
+import { updateBoard } from "@/actions/updateBoard";
+import { toast } from "sonner";
 
 interface BoardTitleFormProps {
   data: Board;
 }
 
-const BoardTitleForm = ({ data }: BoardTitleFormProps) => {
+export const BoardTitleForm = ({ data }: BoardTitleFormProps) => {
+  const { execute } = useAction(updateBoard, {
+    onSuccess: (data: any) => {
+      toast.success(`Board "${data.title}" updated!`);
+      setTitle(data.title);
+      disableEditing();
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
 
@@ -30,6 +44,11 @@ const BoardTitleForm = ({ data }: BoardTitleFormProps) => {
 
   const onSubmit = (formData: FormData) => {
     const title = formData.get("title") as string;
+
+    execute({
+      title,
+      id: data.id,
+    });
   };
 
   const onBlur = () => {
@@ -57,8 +76,8 @@ const BoardTitleForm = ({ data }: BoardTitleFormProps) => {
   return (
     <Button
       onClick={enableEditing}
-      className="h-auto w-auto p-1 px-2 text-lg font-bold"
       variant="transparent"
+      className="h-auto w-auto p-1 px-2 text-lg font-bold"
     >
       {title}
     </Button>
