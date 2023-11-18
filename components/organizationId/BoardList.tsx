@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 const BoardList = async () => {
   const { orgId } = auth();
@@ -62,3 +63,18 @@ const BoardList = async () => {
 };
 
 export default BoardList;
+
+BoardList.Skeleton = function SkeletonBoardList() {
+  return (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <Skeleton className="aspect-video h-full w-full p-2" />
+      <Skeleton className="aspect-video h-full w-full p-2" />
+      <Skeleton className="aspect-video h-full w-full p-2" />
+      <Skeleton className="aspect-video h-full w-full p-2" />
+      <Skeleton className="aspect-video h-full w-full p-2" />
+      <Skeleton className="aspect-video h-full w-full p-2" />
+      <Skeleton className="aspect-video h-full w-full p-2" />
+      <Skeleton className="aspect-video h-full w-full p-2" />
+    </div>
+  );
+};
