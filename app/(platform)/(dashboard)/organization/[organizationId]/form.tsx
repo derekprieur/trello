@@ -1,12 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useFormState } from "react-dom";
-import { CreateBoard } from "@/actions/createBoard";
+import { create } from "@/actions/createBoard";
 import { useAction } from "@/hooks/useAction";
 
 export const Form = () => {
-  const { execute, fieldErrors } = useAction(CreateBoard, {
+  const { execute, fieldErrors } = useAction(create, {
     onSuccess: (data) => {
       console.log(data, "SUCCESS");
     },
