@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { List } from "@prisma/client";
 import { ElementRef, useRef } from "react";
 import { MoreHorizontal, X } from "lucide-react";
-
 import {
   Popover,
   PopoverContent,
@@ -13,6 +12,8 @@ import {
 } from "@/components/ui/popover";
 import { useAction } from "@/hooks/useAction";
 import { Button } from "@/components/ui/button";
+import { copyList } from "@/actions/copyList";
+import { deleteList } from "@/actions/deleteList";
 import { FormSubmit } from "@/components/form/FormSubmit";
 import { Separator } from "@/components/ui/separator";
 
@@ -24,14 +25,38 @@ interface ListOptionsProps {
 export const ListOptions = ({ data, onAddCard }: ListOptionsProps) => {
   const closeRef = useRef<ElementRef<"button">>(null);
 
+  const { execute: executeDelete } = useAction(deleteList, {
+    onSuccess: (data: any) => {
+      toast.success(`List "${data.title}" deleted`);
+      closeRef.current?.click();
+    },
+    onError: (error: any) => {
+      toast.error(error);
+    },
+  });
+
+  const { execute: executeCopy } = useAction(copyList, {
+    onSuccess: (data: any) => {
+      toast.success(`List "${data.title}" copied`);
+      closeRef.current?.click();
+    },
+    onError: (error: any) => {
+      toast.error(error);
+    },
+  });
+
   const onDelete = (formData: FormData) => {
     const id = formData.get("id") as string;
     const boardId = formData.get("boardId") as string;
+
+    executeDelete({ id, boardId });
   };
 
   const onCopy = (formData: FormData) => {
     const id = formData.get("id") as string;
     const boardId = formData.get("boardId") as string;
+
+    executeCopy({ id, boardId });
   };
 
   return (

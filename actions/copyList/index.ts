@@ -4,7 +4,6 @@ import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { createSafeAction } from "@/lib/createSafeAction";
-
 import { CopyList } from "./schema";
 import { InputType, ReturnType } from "./types";
 
@@ -34,6 +33,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
             },
         });
 
+        console.log(listToCopy, 'listToCopy');
+
         if (!listToCopy) {
             return { error: "List not found" };
         }
@@ -44,7 +45,11 @@ const handler = async (data: InputType): Promise<ReturnType> => {
             select: { order: true },
         });
 
+        console.log(lastList, 'lastList');
+
         const newOrder = lastList ? lastList.order + 1 : 1;
+
+        console.log(newOrder, 'newOrder');
 
         list = await db.list.create({
             data: {
@@ -65,6 +70,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 cards: true,
             },
         });
+
+        console.log(list, 'list');
 
     } catch (error) {
         return {
