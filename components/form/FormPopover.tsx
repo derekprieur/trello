@@ -17,7 +17,7 @@ import { createBoard } from "@/actions/createBoard";
 
 import FormInput from "./FormInput";
 import { FormSubmit } from "./FormSubmit";
-import FormPicker from "./FormPicker";
+import { FormPicker } from "./FormPicker";
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -48,6 +48,7 @@ export const FormPopover = ({
 
   const onSubmit = (formData: FormData) => {
     const title = formData.get("title") as string;
+    const image = formData.get("image") as string;
 
     execute({ title });
   };
