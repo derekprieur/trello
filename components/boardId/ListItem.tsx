@@ -2,10 +2,8 @@
 
 import { ElementRef, useRef, useState } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-
 import { cn } from "@/lib/utils";
 import { ListWithCards } from "@/types";
-
 import { CardItem } from "./CardItem";
 import { ListHeader } from "./ListHeader";
 import CardForm from "./CardForm";
@@ -43,6 +41,23 @@ export const ListItem = ({ data, index }: ListItemProps) => {
             className="w-full rounded-md bg-[#f1f2f4] pb-2 shadow-md"
           >
             <ListHeader onAddCard={enableEditing} data={data} />
+            <Droppable droppableId={data.id} type="card">
+              {(provided) => (
+                <ol
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={cn(
+                    "mx-1 px-1 py-0.5 flex flex-col gap-y-2",
+                    data.cards.length > 0 ? "mt-2" : "mt-0"
+                  )}
+                >
+                  {data.cards.map((card, index) => (
+                    <CardItem index={index} key={card.id} data={card} />
+                  ))}
+                  {provided.placeholder}
+                </ol>
+              )}
+            </Droppable>
             <CardForm
               listId={data.id}
               ref={textareaRef}
