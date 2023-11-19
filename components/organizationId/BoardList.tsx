@@ -1,13 +1,16 @@
-import { HelpCircle, User2 } from "lucide-react";
-import Hint from "../Hint";
-import { FormPopover } from "../form/FormPopover";
+import Link from "next/link";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import { HelpCircle, User2 } from "lucide-react";
 import { db } from "@/lib/db";
-import Link from "next/link";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MAX_FREE_BOARDS } from "@/constants/boards";
+import { getAvailableCount } from "@/lib/org-limit";
+import { checkSubscription } from "@/lib/subscription";
+import { FormPopover } from "../form/FormPopover";
+import Hint from "../Hint";
 
-const BoardList = async () => {
+export const BoardList = async () => {
   const { orgId } = auth();
 
   if (!orgId) {
@@ -22,6 +25,9 @@ const BoardList = async () => {
       createdAt: "desc",
     },
   });
+
+  const availableCount = await getAvailableCount();
+  const isPro = await checkSubscription();
 
   return (
     <div className="space-y-4">
@@ -47,6 +53,11 @@ const BoardList = async () => {
             className="relative flex aspect-video h-full w-full flex-col items-center justify-center gap-y-1 rounded-sm bg-muted transition hover:opacity-75"
           >
             <p className="text-sm">Create new board</p>
+            <span className="text-xs">
+              {isPro
+                ? "Unlimited"
+                : `${MAX_FREE_BOARDS - availableCount} remaining`}
+            </span>
             <Hint
               sideOffset={40}
               description={`
@@ -61,8 +72,6 @@ const BoardList = async () => {
     </div>
   );
 };
-
-export default BoardList;
 
 BoardList.Skeleton = function SkeletonBoardList() {
   return (
